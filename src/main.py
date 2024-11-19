@@ -1,10 +1,42 @@
-from src.scanner.scanner import *
+import tkinter as tk
+from tkinter import filedialog
+from src.scanner.scanner import Scanner
 
-code = "{ Sample program in TINY language - computes factorial } read x; if x < 10 then y := x + 1; end;"
+def browse_and_read_file():
+    # Create a Tkinter root window (hidden)
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
 
-scanner = Scanner(code)
+    # Open a file dialog to select the file
+    file_path = filedialog.askopenfilename(title="Select a File",
+                                           filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
 
-tokens = scanner.tokenize()
+    if file_path:  # If a file was selected
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()  # Read the file content
+                return content
+        except Exception as e:
+            print(f"Error reading file: {e}")
+            return None
+    else:
+        print("No file selected.")
+        return None
 
-for token in tokens:
-    print(token)
+
+# Run the file browsing and reading function
+code = browse_and_read_file()
+
+if code:  # If content is successfully read
+    # Create a Scanner object and tokenize the code
+    try:
+        scanner = Scanner(code)
+        tokens = scanner.tokenize()
+
+        # Print the tokens
+        for token in tokens:
+            print(token)
+    except Exception as e:
+        print(f"Error during tokenization: {e}")
+else:
+    print("No code provided.")
