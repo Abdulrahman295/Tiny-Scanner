@@ -40,3 +40,6 @@ if code:  # If content is successfully read
         print(f"Error during tokenization: {e}")
 else:
     print("No code provided.")
+
+# Keep the CMD window open after showing the result
+input("Press Enter to exit...")
