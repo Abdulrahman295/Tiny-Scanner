@@ -41,6 +41,7 @@ class Scanner:
         if self.current_lexeme:
             if self.current_state == ScannerState.INNUM:
                 self.tokens.append(Token(TokenType.NUMBER, self.current_lexeme))
+                
             elif self.current_state == ScannerState.INID:
                 keyword_tokens = {
                     'if': TokenType.IF,
@@ -54,6 +55,12 @@ class Scanner:
 
                 token_type = keyword_tokens.get(self.current_lexeme, TokenType.IDENTIFIER)
                 self.tokens.append(Token(token_type, self.current_lexeme))
+
+            elif self.current_state == ScannerState.INASSIGN:
+                raise ValueError(f"Invalid assignment at position {index}: expected '=' after ':' but got -> '{self.current_lexeme}'")
+
+            elif self.current_state == ScannerState.INCOMMENT:
+                raise ValueError(f"Unclosed comment detected starting at position {self.code.rindex('{')}")
 
         return self.tokens
 
@@ -73,6 +80,7 @@ class Scanner:
 
         elif current_char == '{':
             self.current_state = ScannerState.INCOMMENT
+            self.current_lexeme += current_char
             return index + 1
 
         elif current_char == ':':
@@ -102,8 +110,9 @@ class Scanner:
     def handle_comment_state(self, index: int, current_char: str) -> int:
         if current_char == '}':
             self.current_state = ScannerState.START
+            self.current_lexeme = ""
 
-        if index == len(self.code) - 1:
+        if index == len(self.code) - 1 and current_char != '}':
             raise ValueError(f"Unclosed comment detected starting at position {self.code.rindex('{')}")
 
         return index + 1
