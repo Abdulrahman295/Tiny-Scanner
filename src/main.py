@@ -3,15 +3,13 @@ from tkinter import filedialog
 from src.scanner.scanner import Scanner
 
 def browse_and_read_file():
-    # Create a Tkinter root window (hidden)
     root = tk.Tk()
-    root.withdraw()  # Hide the root window
+    root.withdraw()
 
     # Open a file dialog to select the file
-    file_path = filedialog.askopenfilename(title="Select a File",
+    file_path = filedialog.askopenfilename(title="Select your code",
                                            filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-
-    if file_path:  # If a file was selected
+    if file_path:
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content = file.read()  # Read the file content
@@ -23,23 +21,27 @@ def browse_and_read_file():
         print("No file selected.")
         return None
 
-
-# Run the file browsing and reading function
 code = browse_and_read_file()
+if code:
 
-if code:  # If content is successfully read
-    # Create a Scanner object and tokenize the code
     try:
         scanner = Scanner(code)
         tokens = scanner.tokenize()
 
-        # Print the tokens
-        for token in tokens:
-            print(token)
+        output_file_path = filedialog.asksaveasfilename(
+            title="Save Tokens As",
+            defaultextension=".txt",
+            filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
+        )
+
+        if output_file_path:
+            with open(output_file_path, 'w', encoding='utf-8') as output_file:
+                for token in tokens:
+                    output_file.write(f"{token}\n")
+            print(f"Tokens saved to {output_file_path}")
+        else:
+            print("No file selected for saving the output.")
     except Exception as e:
         print(f"Error during tokenization: {e}")
 else:
     print("No code provided.")
-
-# Keep the CMD window open after showing the result
-input("Press Enter to exit...")
