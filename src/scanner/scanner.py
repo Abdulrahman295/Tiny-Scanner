@@ -122,9 +122,6 @@ class Scanner:
             self.current_lexeme += current_char
             return index + 1
 
-        elif current_char.isalpha():
-            raise ValueError(f"Invalid number at position {index}: numbers cannot contain letters -> '{self.current_lexeme + current_char}'")
-
         else:
             self.tokens.append(Token(TokenType.NUMBER, self.current_lexeme))
             self.current_lexeme = ""
@@ -135,9 +132,6 @@ class Scanner:
         if current_char.isalpha():
             self.current_lexeme += current_char
             return index + 1
-
-        elif current_char.isdigit():
-            raise ValueError(f"Invalid identifier at position {index}: identifiers cannot contain numbers -> '{self.current_lexeme + current_char}'")
 
         else:
             keyword_tokens = {
