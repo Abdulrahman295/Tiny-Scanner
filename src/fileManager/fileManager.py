@@ -1,31 +1,36 @@
-from tkinter import filedialog, messagebox
-from typing import List, Optional
+from PyQt5 import QtWidgets
+from typing import List, Tuple
 
 class FileManager:
     @staticmethod
-    def read_code() -> Optional[str]:
-        file_path = filedialog.askopenfilename(title="Select your code",
-                                               filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+    def read_code(ui) -> Tuple[str, str]:
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(
+            caption="Open File",
+            directory="",
+            filter="Text Files (*.txt);;All Files (*.*)"
+        )
+        print(file_path)
         if file_path:
             try:
                 with open(file_path, 'r', encoding='utf-8') as file:
-                    content = file.read()  # Read the file content
-                    return content
+                    result = [file_path, file.read()]
+                    ui.showMessage("File read successfully.")
+                    return result
 
             except Exception as e:
-                messagebox.showerror("File Error", f"Error reading file: {e}")
-                return None
+                ui.showMessage(f"Error reading file: {e}")
+                return "", ""
         else:
-            messagebox.showwarning("File Selection", "No file selected.")
-            return None
+            ui.showMessage("No file selected for reading.")
+            return "", ""
 
     @staticmethod
-    def write_tokens(tokens: List) -> None:
-        output_file_path = filedialog.asksaveasfilename(
-            title="Save Tokens As",
-            defaultextension=".txt",
-            filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
-        )
+    def write_tokens(ui, tokens: List) -> None:
+        output_file_path, _ = QtWidgets.QFileDialog.getSaveFileName(
+                caption="Save Tokens",
+                directory="",
+                filter="Text Files (*.txt)"
+            )
 
         if output_file_path:
             try:
@@ -33,10 +38,9 @@ class FileManager:
                     for token in tokens:
                         output_file.write(f"{token}\n")
 
-                messagebox.showinfo("Success", f"Tokens saved to {output_file_path}")
+                ui.showMessage(f"Tokens saved to {output_file_path}")
 
             except Exception as e:
-                messagebox.showerror("File Error", f"Error writing tokens to file: {e}")
+                ui.showMessage(f"Error writing tokens to file: {e}")
         else:
-            messagebox.showwarning("Save Tokens", "No file selected for saving.")
-
+            ui.showMessage("No file selected for saving.")
