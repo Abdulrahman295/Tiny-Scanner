@@ -2,6 +2,8 @@ import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 from src.fileManager.fileManager import FileManager
 from src.scanner.scanner import Scanner
+from src.parser.parser import Parser
+from src.gui.treeWindow import TreeWindow
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -278,12 +280,30 @@ class Ui_MainWindow(object):
             scanner = Scanner(code)
             tokens = scanner.tokenize()
             FileManager.write_tokens(self, tokens)
+
         except Exception as e:
             self.showMessage(f"Error during scanning: {e}")
-        
+
+    def parseFunction(self):
+        if not self.code_holder.toPlainText():
+            self.showMessage("Please open a file or write code in order to parse")
+            return
+
+        try:
+            code = self.code_holder.toPlainText()
+            scanner = Scanner(code)
+            tokens = scanner.tokenize()
+
+            parser = Parser(tokens)
+            parse_tree = parser.get_parse_tree()
+            tree_window = TreeWindow(parse_tree)
+            tree_window.exec_()  # Show modal dialog
+            
+        except Exception as e:
+            self.showMessage(str(e))
 
     def initialize_buttons(self):
         self.open_file_button.clicked.connect(self.openFileFunction)
         self.close_button.clicked.connect(self.closeWindowFunction)
         self.scan_button.clicked.connect(self.scanFunction)
-        self.parse_button.clicked.connect(lambda: print("Parse button clicked"))
+        self.parse_button.clicked.connect(self.parseFunction)

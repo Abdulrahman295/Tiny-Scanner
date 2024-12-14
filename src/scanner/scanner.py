@@ -1,5 +1,5 @@
 from src.scanner.scannerState import *
-from src.token.token import *
+from src.tokn.token import *
 
 class Scanner:
     def __init__(self, code: str):
