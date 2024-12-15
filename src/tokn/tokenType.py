@@ -4,6 +4,7 @@ class TokenType(Enum):
     SEMICOLON = auto() 
     IF = auto()
     THEN = auto()
+    ELSE = auto()
     END = auto()
     REPEAT = auto()
     UNTIL = auto()

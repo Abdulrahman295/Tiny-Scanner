@@ -137,6 +137,7 @@ class Scanner:
             keyword_tokens = {
                 'if': TokenType.IF,
                 'then': TokenType.THEN,
+                'else': TokenType.ELSE,
                 'end': TokenType.END,
                 'repeat': TokenType.REPEAT,
                 'until': TokenType.UNTIL,

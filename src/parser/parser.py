@@ -93,6 +93,15 @@ class Parser:
                 raise ValueError("Empty THEN branch in if statement")
             if_node.add_child(then_node)
 
+            # Handle optional ELSE branch
+            if self.current_token and self.current_token.get_type() == TokenType.ELSE:
+                self.match(TokenType.ELSE)
+                else_node = self.statement_sequence()
+                if not else_node:
+                    raise ValueError("Empty ELSE branch in if statement")
+
+                if_node.add_child(else_node)
+
             self.match(TokenType.END)
 
             return if_node
