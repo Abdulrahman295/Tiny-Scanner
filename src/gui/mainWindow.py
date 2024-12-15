@@ -228,19 +228,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.close_button)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.verticalLayout.addWidget(self.horizontalWidget_2)
-        self.statusBar = QtWidgets.QStatusBar(self.verticalWidget)
-        self.statusBar.setStyleSheet("""
-            QStatusBar {
-                color: white;
-                background-color: #19232D;
-                font-size: 15px;
-                font-weight: bold;
-                font-style: italic;
-                margin: 2px;
-            }
-        """)
-        self.statusBar.setSizeGripEnabled(False)  # Remove the resize grip
-        self.verticalLayout.addWidget(self.statusBar)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -257,7 +244,33 @@ class Ui_MainWindow(object):
         self.close_button.setText(_translate("MainWindow", "Close"))
 
     def showMessage(self, message):
-        self.statusBar.showMessage(message, 6000)
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setWindowTitle("Notification")
+        msg.setText(message)
+        msg.setStyleSheet("""
+        QMessageBox {
+            background-color: #19232D;
+            color: white;
+            font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+            font-weight: bold;
+        }
+        QPushButton {
+            background-color: rgb(36, 160, 237);
+            color: white;
+            font-size: 15px;
+            border-radius: 4px;
+            padding: 6px 12px;
+            min-width: 64px;
+            font-weight: bold;
+        }
+        QLabel {
+            color: white;
+            font-weight: bold;
+            margin: 5px;
+        }
+        """)
+        msg.exec_()
 
     def openFileFunction(self):
         file_path, code = FileManager.read_code(self)
